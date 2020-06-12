@@ -62,7 +62,7 @@ public class LISRequestQuery {
          return (String)result[0];
 }
      public static String strXml(){
-         String str="<Request><LISRequest><RequestId>20051811497191</RequestId></LISRequest></Request>";
+         String str="<Request><LISRequest><RequestId>20052503438638</RequestId></LISRequest></Request>";
          return str;
      }
 }

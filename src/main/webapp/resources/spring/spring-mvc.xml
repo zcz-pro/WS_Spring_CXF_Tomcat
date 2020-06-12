@@ -13,8 +13,53 @@
 	<!--启用spring的一些annotation -->
 	<context:annotation-config/>
 
+	<mvc:default-servlet-handler/>
+
+	<!-- 配置SpringMVC的视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<!-- 定义文件上传解析器 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 设定默认编码 -->
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<!-- 设定文件上传的最大值为5MB，5*1024*1024 -->
+		<property name="maxUploadSize" value="5242880"></property>
+		<!-- 设定文件上传时写入内存的最大值，如果小于这个参数不会生成临时文件，默认为10240 -->
+		<property name="maxInMemorySize" value="40960"></property>
+		<!-- 上传文件的临时路径 -->
+		<property name="uploadTempDir" value="fileUpload/temp"></property>
+		<!-- 延迟文件解析 -->
+		<property name="resolveLazily" value="true"/>
+	</bean>
+
 	<!-- 配置注解驱动 可以将request参数与绑定到controller参数上 -->
-	<mvc:annotation-driven/>
+	<!--<mvc:annotation-driven/>-->
+	<!-- 启动注解，注册服务，如验证框架、全局类型转换器 -->
+	<mvc:annotation-driven>
+		<!-- 处理responseBody日期类型 -->
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+					<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+						<property name="dateFormat">
+							<bean class="java.text.SimpleDateFormat">
+								<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
+							</bean>
+						</property>
+						<!-- 时区指定 -->
+						<property name="timeZone" value="GMT+8"/>
+						<!-- 为null字段时不显示 -->
+						<property name="serializationInclusion">
+							<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
 
 	<!-- 启动组件扫描，排除@Controller组件，该组件由SpringMVC配置文件扫描 -->
 	<context:component-scan  base-package="com.webservice.his.ba.controller,com.webservice.his.ba.service,com.webservice.his.ba.Utils,org.tempuri"/>
