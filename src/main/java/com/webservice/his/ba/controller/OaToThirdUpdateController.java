@@ -1,6 +1,7 @@
 package com.webservice.his.ba.controller;
 
 import com.webservice.his.ba.entity.SampleMaster;
+import com.webservice.his.ba.eventlisteners.publish.EmailService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -18,6 +20,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/oaToThird/updateThirdData")
 public class OaToThirdUpdateController {
+    @Resource
+    private EmailService emailService;
 
     private String fileName;
     private File file;
@@ -151,5 +155,13 @@ public class OaToThirdUpdateController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping(value="/testEvent")
+    public void testEvent(HttpServletRequest request)throws Exception{
+        List<String> list=new ArrayList<>();
+        list.add("127.0.0.2");
+        emailService.setBlackList(list);
+        emailService.sendEmail("127.0.0.2","this is a syn event listener");
     }
 }
